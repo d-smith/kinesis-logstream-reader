@@ -9,6 +9,7 @@ import com.amazonaws.services.kinesis.clientlibrary.types.ShutdownReason;
 import com.amazonaws.services.kinesis.model.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import retrofit.RestAdapter;
 
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
@@ -18,6 +19,8 @@ import java.util.List;
 public class LogReaderRecordProcessor implements IRecordProcessor {
     private final Logger LOG = LoggerFactory.getLogger(LogReaderRecordProcessor.class);
     private String kinesisShardId;
+
+    private String token = "not-a-token";
 
     // Backoff and retry settings
     private static final long BACKOFF_TIME_IN_MILLIS = 3000L;
@@ -29,9 +32,25 @@ public class LogReaderRecordProcessor implements IRecordProcessor {
 
     private final CharsetDecoder decoder = Charset.forName("UTF-8").newDecoder();
 
+    private LogglyService logglyService;
+
+    LogglyCallback callback = new LogglyCallback();
+
+
+    public LogReaderRecordProcessor() {
+        token = System.getProperty("logglyToken");
+
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setEndpoint("http://logs-01.loggly.com")
+                .build();
+
+        logglyService = restAdapter.create(LogglyService.class);
+    }
+
 
     @Override
     public void initialize(String shardId) {
+
         LOG.info("Initializing record processor for shard: " + shardId);
         this.kinesisShardId = shardId;
     }
@@ -101,7 +120,9 @@ public class LogReaderRecordProcessor implements IRecordProcessor {
                 try {
                     // For this app, we interpret the payload as UTF-8 chars.
                     data = decoder.decode(record.getData()).toString();
-                    LOG.info(record.getSequenceNumber() + ", " + record.getPartitionKey() + ", " + data);
+                    //LOG.info(record.getSequenceNumber() + ", " + record.getPartitionKey() + ", " + data);
+                    LOG.info("Posting log data: " + data);
+                    logglyService.postLogData(token, new LogMessage(data),callback);
                     //
                     // Logic to process record goes here.
                     //
