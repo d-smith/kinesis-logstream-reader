@@ -111,6 +111,14 @@ public class LogReaderRecordProcessor implements IRecordProcessor {
         }
     }
 
+    private LogMessage msgFromData(String raw) {
+        if(CallTimeMsg.isTimeMessage(raw)) {
+            return new CallTimeMsg(raw);
+        } else {
+            return new RawMessage(raw);
+        }
+    }
+
 
     private void processRecordsWithRetries(List<Record> records) {
         for (Record record : records) {
@@ -121,8 +129,12 @@ public class LogReaderRecordProcessor implements IRecordProcessor {
                     // For this app, we interpret the payload as UTF-8 chars.
                     data = decoder.decode(record.getData()).toString();
                     //LOG.info(record.getSequenceNumber() + ", " + record.getPartitionKey() + ", " + data);
+
                     LOG.info("Posting log data: " + data);
-                    logglyService.postLogData(token, new LogMessage(data),callback);
+
+                    LogMessage msg = msgFromData(data);
+                    LOG.info("message to post is " + msg);
+                    logglyService.postLogData(token, msg,callback);
                     //
                     // Logic to process record goes here.
                     //
