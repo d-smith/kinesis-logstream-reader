@@ -10,7 +10,7 @@ public class CallTimeMsg extends LogMessage {
 
     String txn;
     String id;
-    String svcTime;
+    int callTime;
 
     public CallTimeMsg(String raw) {
         String[] parts = raw.split(" - ");
@@ -18,7 +18,7 @@ public class CallTimeMsg extends LogMessage {
         id = parts[2];
 
         String rawTime = parts[1];
-        svcTime = rawTime.split(" ")[0];
+        callTime = Integer.parseInt(rawTime.split(" ")[0]);
     }
 
     public String getTxn() {
@@ -29,7 +29,7 @@ public class CallTimeMsg extends LogMessage {
         return id;
     }
 
-    public String getSvcTime() {
-        return svcTime;
+    public int getCallTime() {
+        return callTime;
     }
 }
