@@ -1,4 +1,4 @@
-package logreader;
+package loggly;
 
 public abstract class LogMessage {
 

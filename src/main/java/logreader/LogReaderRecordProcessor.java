@@ -7,6 +7,7 @@ import com.amazonaws.services.kinesis.clientlibrary.interfaces.IRecordProcessor;
 import com.amazonaws.services.kinesis.clientlibrary.interfaces.IRecordProcessorCheckpointer;
 import com.amazonaws.services.kinesis.clientlibrary.types.ShutdownReason;
 import com.amazonaws.services.kinesis.model.Record;
+import loggly.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import retrofit.RestAdapter;

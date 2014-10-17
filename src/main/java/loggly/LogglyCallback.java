@@ -1,4 +1,4 @@
-package logreader;
+package loggly;
 
 
 import org.slf4j.Logger;
