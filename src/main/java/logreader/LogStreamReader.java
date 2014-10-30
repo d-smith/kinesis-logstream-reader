@@ -19,8 +19,8 @@ import java.net.InetAddress;
 import java.util.UUID;
 
 public class LogStreamReader {
-    private static final String DEFAULT_APP_NAME = "LogReaderApp";
-    private static final String DEFAULT_STREAM_NAME = "loggingStream";
+    private static final String DEFAULT_APP_NAME = "LogReaderApp2";
+    private static final String DEFAULT_STREAM_NAME = "loggingStream2";
 
     private static final String DEFAULT_KINESIS_ENDPOINT = "https://kinesis.us-east-1.amazonaws.com";
 
