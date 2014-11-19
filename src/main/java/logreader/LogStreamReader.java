@@ -9,6 +9,7 @@ import com.amazonaws.services.kinesis.clientlibrary.lib.worker.InitialPositionIn
 import com.amazonaws.services.kinesis.clientlibrary.lib.worker.KinesisClientLibConfiguration;
 import com.amazonaws.services.kinesis.clientlibrary.lib.worker.Worker;
 import loggly.LogglyRecordProcessorFactory;
+import logstash.LogstashRecordProcessorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,11 +37,27 @@ public class LogStreamReader {
     private static final Logger LOG = LoggerFactory.getLogger(LogStreamReader.class);
 
     public static void main(String[] args) throws IOException {
+        IRecordProcessorFactory recordProcessorFactory = null;
+
+        if(args.length != 1) {
+            System.err.println("Usage: java ...LogStreamReader <channel>\n  where channel is loggly or logstash");
+            System.exit(1);
+
+        }
+
+        if(args[0].equals("loggly")) {
+            recordProcessorFactory = new LogglyRecordProcessorFactory();
+        } else if(args[0].equals("logstash")) {
+            recordProcessorFactory = new LogstashRecordProcessorFactory();
+        } else {
+            System.err.println("Usage: java ...LogStreamReader <channel>\n  where channel is loggly or logstash");
+            System.exit(1);
+        }
+
         configure();
 
         LOG.info("Running " + applicationName + " to process stream " + streamName);
 
-        IRecordProcessorFactory recordProcessorFactory = new LogglyRecordProcessorFactory();
         Worker worker = new Worker(recordProcessorFactory, kinesisClientLibConfiguration);
 
         int exitCode = 0;
