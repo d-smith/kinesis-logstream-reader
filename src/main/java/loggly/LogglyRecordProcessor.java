@@ -1,4 +1,4 @@
-package logreader;
+package loggly;
 
 import com.amazonaws.services.kinesis.clientlibrary.exceptions.InvalidStateException;
 import com.amazonaws.services.kinesis.clientlibrary.exceptions.ShutdownException;
@@ -17,8 +17,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.util.List;
 
-public class LogReaderRecordProcessor implements IRecordProcessor {
-    private final Logger LOG = LoggerFactory.getLogger(LogReaderRecordProcessor.class);
+public class LogglyRecordProcessor implements IRecordProcessor {
+    private final Logger LOG = LoggerFactory.getLogger(LogglyRecordProcessor.class);
     private String kinesisShardId;
 
     private String token = "not-a-token";
@@ -38,7 +38,7 @@ public class LogReaderRecordProcessor implements IRecordProcessor {
     LogglyCallback callback = new LogglyCallback();
 
 
-    public LogReaderRecordProcessor() {
+    public LogglyRecordProcessor() {
         token = System.getProperty("logglyToken");
 
         RestAdapter restAdapter = new RestAdapter.Builder()
