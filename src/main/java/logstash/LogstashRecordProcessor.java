@@ -7,12 +7,14 @@ import com.amazonaws.services.kinesis.clientlibrary.interfaces.IRecordProcessor;
 import com.amazonaws.services.kinesis.clientlibrary.interfaces.IRecordProcessorCheckpointer;
 import com.amazonaws.services.kinesis.clientlibrary.types.ShutdownReason;
 import com.amazonaws.services.kinesis.model.Record;
+import com.google.gson.Gson;
 import loggly.CallTimeMsg;
 import loggly.LogMessage;
 import loggly.RawMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
@@ -20,6 +22,31 @@ import java.util.List;
 
 
 public class LogstashRecordProcessor implements IRecordProcessor {
+
+    String logstashHost;
+    int logstashPort;
+    LogstashSender logstashSender;
+    Gson gson = new Gson();
+
+    public LogstashRecordProcessor() {
+        logstashHost = System.getProperty("logstashHost");
+        if(logstashHost == null) {
+            throw new Error("No value defined for system property logstashHost");
+        }
+
+        String portSetting = System.getProperty("logstashPort");
+        if(portSetting == null) {
+            throw new Error("No value defined for system property logstashPort");
+        }
+
+        logstashPort = Integer.valueOf(portSetting);
+
+        try {
+            logstashSender = new LogstashSender(logstashHost, logstashPort);
+        } catch(IOException io) {
+            throw new Error(io);
+        }
+    }
 
     private final CharsetDecoder decoder = Charset.forName("UTF-8").newDecoder();
 
@@ -113,17 +140,13 @@ public class LogstashRecordProcessor implements IRecordProcessor {
                 try {
                     // For this app, we interpret the payload as UTF-8 chars.
                     data = decoder.decode(record.getData()).toString();
-                    //LOG.info(record.getSequenceNumber() + ", " + record.getPartitionKey() + ", " + data);
-                    LOG.info("seq no: -->" + record.getSequenceNumber() + ", chars: " + data.length());
 
-                    LOG.info("Sending log data: " + data);
 
                     LogMessage msg = msgFromData(data);
-                    LOG.info("message to send is " + msg);
+                    String logString  = gson.toJson(msg);
+                    LOG.info("Send to logstash: " + logString);
 
-
-                    ///TODO - Send to logstash
-                    System.out.println("send to logstash");
+                    logstashSender.send(logString);
 
                     //
                     // Logic to process record goes here.
