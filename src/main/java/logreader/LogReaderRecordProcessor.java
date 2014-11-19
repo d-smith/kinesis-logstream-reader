@@ -130,6 +130,7 @@ public class LogReaderRecordProcessor implements IRecordProcessor {
                     // For this app, we interpret the payload as UTF-8 chars.
                     data = decoder.decode(record.getData()).toString();
                     //LOG.info(record.getSequenceNumber() + ", " + record.getPartitionKey() + ", " + data);
+                    LOG.info("seq no: -->" + record.getSequenceNumber() + ", chars: " + data.length());
 
                     LOG.info("Posting log data: " + data);
 
