@@ -1,17 +1,11 @@
 package logstash;
 
-import com.amazonaws.services.kinesis.clientlibrary.exceptions.InvalidStateException;
-import com.amazonaws.services.kinesis.clientlibrary.exceptions.ShutdownException;
-import com.amazonaws.services.kinesis.clientlibrary.exceptions.ThrottlingException;
-import com.amazonaws.services.kinesis.clientlibrary.interfaces.IRecordProcessor;
-import com.amazonaws.services.kinesis.clientlibrary.interfaces.IRecordProcessorCheckpointer;
-import com.amazonaws.services.kinesis.clientlibrary.types.ShutdownReason;
 import com.amazonaws.services.kinesis.model.Record;
 import com.google.gson.Gson;
-import loggly.CallTimeMsg;
-import loggly.LogMessage;
-import loggly.RawMessage;
 import logreader.LogStreamProcessor;
+import messages.CallTimeMsg;
+import messages.LogMessage;
+import messages.RawMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

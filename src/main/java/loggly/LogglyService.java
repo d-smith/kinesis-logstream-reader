@@ -1,6 +1,7 @@
 package loggly;
 
 
+import messages.LogMessage;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;

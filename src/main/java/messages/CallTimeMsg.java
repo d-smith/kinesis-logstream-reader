@@ -1,4 +1,4 @@
-package loggly;
+package messages;
 
 
 public class CallTimeMsg extends LogMessage {
